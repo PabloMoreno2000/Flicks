@@ -7,6 +7,7 @@ import org.parceler.Parcel;
 
 @Parcel
 public class Movie {
+    
 
     //values from API
     private String title;
