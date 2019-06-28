@@ -1,6 +1,7 @@
 package com.example.flicks;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -62,15 +63,35 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
         viewHolder.tvOverview.setText(movie.getOverview());
 
         //build url for poster image
-        String imageUrl = config.getImageUrl(config.getPosterSize(), movie.getPosterPath());
+        String imageUrl = null;
+
+
+
+
+        //determine the current orientation
+        boolean isPortrait = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+
+
+        //if in portrait mode, load the poster image
+        if(isPortrait) {
+            imageUrl = config.getImageUrl(config.getPosterSize(), movie.getPosterPath());
+        }
+
+        else {
+            imageUrl = config.getImageUrl(config.getBackdropSize(), movie.getBackdropPath());
+        }
+
+        //get the correct placeholder and imageview for the current orientation
+        int placeholderId = isPortrait ? R.drawable.flicks_movie_placeholder : R.drawable.flicks_backdrop_placeholder;
+        ImageView imageView = isPortrait ? viewHolder.ivPosterImage : viewHolder.ivBackdropImage;
 
         //load image using glide
         Glide.with(context)
                 .load(imageUrl)
                 .bitmapTransform(new RoundedCornersTransformation(context, 25, 0))
-                .placeholder(R.drawable.flicks_movie_placeholder)
-                .error(R.drawable.flicks_movie_placeholder)
-                .into(viewHolder.ivPosterImage);
+                .placeholder(placeholderId)
+                .error(placeholderId)
+                .into(imageView);
     }
 
     //returns the size of the entire data set
@@ -84,13 +105,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
         //Track view objects
         ImageView ivPosterImage;
+        ImageView ivBackdropImage;
         TextView tvTitle;
         TextView tvOverview;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            ivPosterImage = (ImageView) itemView.findViewById(R.id.ivPosterImage);
+            ivPosterImage = (ImageView) itemView.findViewById(R.id.ivBackdropImage);
+            ivBackdropImage = (ImageView) itemView.findViewById(R.id.ivBackdropImage);
             tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
             tvOverview = (TextView) itemView.findViewById(R.id.tvOverview);
         }
