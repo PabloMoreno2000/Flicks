@@ -79,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
+
     }
 
 
@@ -125,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     //get the configuration from the api
     private void getConfiguration() {
